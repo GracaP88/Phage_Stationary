@@ -1,0 +1,64 @@
+pathway;15 min;30 min
+Nucleobase-containing compound metabolic process (GO:0006139);49.85835694;
+Purine nucleotide biosynthetic process (GO:0006164);74.41860465;
+tRNA metabolic process (GO:0006399);78.57142857;
+Translation (GO:0006412);75.51020408;87.75510204
+Peptide metabolic process (GO:0006518);73.58490566;86.79245283
+Cellular aromatic compound metabolic process (GO:0006725);48.04878049;
+Nitrogen compound metabolic process (GO:0006807);49.15966387;64.28571429
+Metabolic process (GO:0008152);45.77387486;60.92206367
+Biosynthetic process (GO:0009058);53.61050328;68.70897155
+Macromolecule biosynthetic process (GO:0009059);66.27906977;81.97674419
+Purine ribonucleotide biosynthetic process (GO:0009152);73.80952381;
+Cellular process (GO:0009987);45.08566276;61.40667268
+Gene expression (GO:0010467);64.70588235;77.54010695
+RNA metabolic process (GO:0016070);59.63302752;
+Protein metabolic process (GO:0019538);61.17021277;74.46808511
+Cellular nitrogen compound metabolic process (GO:0034641);51.28712871;67.32673267
+Cellular macromolecule biosynthetic process (GO:0034645);72.14285714;85
+Nucleobase-containing compound biosynthetic process (GO:0034654);57.89473684;
+ncRNA metabolic process (GO:0034660);69.62025316;
+Macromolecule metabolic process (GO:0043170);53.9503386;68.62302483
+Cellular amide metabolic process (GO:0043603);69.11764706;81.61764706
+Amide biosynthetic process (GO:0043604);71.18644068;81.3559322
+Cellular metabolic process (GO:0044237);46.60912454;61.15906289
+Primary metabolic process (GO:0044238);48.13278008;62.51728907
+Cellular biosynthetic process (GO:0044249);55.60640732;70.4805492
+Cellular macromolecule metabolic process (GO:0044260);56.59722222;72.56944444
+Cellular nitrogen compound biosynthetic process (GO:0044271);59.19117647;75.73529412
+Heterocycle metabolic process (GO:0046483);46.0807601;
+Organic substance metabolic process (GO:0071704);47.68683274;63.10794781
+Carbohydrate derivative metabolic process (GO:1901135);52.97619048;
+Carbohydrate derivative biosynthetic process (GO:1901137);64.34782609;
+Organic cyclic compound metabolic process (GO:1901360);46.38694639;
+Organonitrogen compound metabolic process (GO:1901564);51.97505198;65.9043659
+Organonitrogen compound biosynthetic process (GO:1901566);56.74846626;71.47239264
+Organic substance biosynthetic process (GO:1901576);54.40180587;69.97742664
+Nucleotide binding (GO:0000166);46.52406417;
+Nucleic acid binding (GO:0003676);50.47923323;
+RNA binding (GO:0003723);64.48598131;
+Structural constituent of ribosome (GO:0003735);75;
+Catalytic activity (GO:0003824);42.10009814;
+Binding (GO:0005488);45.23809524;
+ATP binding (GO:0005524);50.55350554;
+Ligase activity (GO:0016874);64.36781609;
+rRNA binding (GO:0019843);76.74418605;
+Ribonucleotide binding (GO:0032553);49.51456311;
+Purine ribonucleotide binding (GO:0032555);49.66666667;
+Purine ribonucleoside triphosphate binding (GO:0035639);49.83277592;
+Small molecule binding (GO:0036094);45;
+Ion binding (GO:0043167);45.37521815;
+Anion binding (GO:0043168);47.31182796;
+Organic cyclic compound binding (GO:0097159);46.22356495;
+Carbohydrate derivative binding (GO:0097367);49.05063291;
+Catalytic activity, acting on a tRNA (GO:0140101);80.43478261;
+Heterocyclic compound binding (GO:1901363);46.22356495;
+Intracellular anatomical structure (GO:0005622);54.07407407;66.91358025
+Cytoplasm (GO:0005737);50.73746313;
+Ribosome (GO:0005840);71.66666667;86.66666667
+Plasma membrane (GO:0005886);;67.52411576
+Membrane (GO:0016020);;60.53459119
+Intracellular organelle (GO:0043229);;84.72222222
+Intracellular non-membrane-bounded organelle (GO:0043232);66.1971831;84.50704225
+Cell periphery (GO:0071944);;67.62820513
+Cellular anatomical entity (GO:0110165);43.63636364;62.20095694

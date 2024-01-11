@@ -1,0 +1,65 @@
+pathway;type
+Nucleobase-containing compound metabolic process (GO:0006139);Biological Processes
+Purine nucleotide biosynthetic process (GO:0006164);Biological Processes
+tRNA metabolic process (GO:0006399);Biological Processes
+Translation (GO:0006412);Biological Processes
+Peptide metabolic process (GO:0006518);Biological Processes
+Cellular aromatic compound metabolic process (GO:0006725);Biological Processes
+Nitrogen compound metabolic process (GO:0006807);Biological Processes
+Metabolic process (GO:0008152);Biological Processes
+Biosynthetic process (GO:0009058);Biological Processes
+Macromolecule biosynthetic process (GO:0009059);Biological Processes
+Purine ribonucleotide biosynthetic process (GO:0009152);Biological Processes
+Cellular process (GO:0009987);Biological Processes
+Gene expression (GO:0010467);Biological Processes
+RNA metabolic process (GO:0016070);Biological Processes
+Protein metabolic process (GO:0019538);Biological Processes
+Cellular nitrogen compound metabolic process (GO:0034641);Biological Processes
+Cellular macromolecule biosynthetic process (GO:0034645);Biological Processes
+Nucleobase-containing compound biosynthetic process (GO:0034654);Biological Processes
+ncRNA metabolic process (GO:0034660);Biological Processes
+Macromolecule metabolic process (GO:0043170);Biological Processes
+Cellular amide metabolic process (GO:0043603);Biological Processes
+Amide biosynthetic process (GO:0043604);Biological Processes
+Cellular metabolic process (GO:0044237);Biological Processes
+Primary metabolic process (GO:0044238);Biological Processes
+Cellular biosynthetic process (GO:0044249);Biological Processes
+Cellular macromolecule metabolic process (GO:0044260);Biological Processes
+Cellular nitrogen compound biosynthetic process (GO:0044271);Biological Processes
+Heterocycle metabolic process (GO:0046483);Biological Processes
+Organic substance metabolic process (GO:0071704);Biological Processes
+Carbohydrate derivative metabolic process (GO:1901135);Biological Processes
+Carbohydrate derivative biosynthetic process (GO:1901137);Biological Processes
+Organic cyclic compound metabolic process (GO:1901360);Biological Processes
+Organonitrogen compound metabolic process (GO:1901564);Biological Processes
+Organonitrogen compound biosynthetic process (GO:1901566);Biological Processes
+Organic substance biosynthetic process (GO:1901576);Biological Processes
+Nucleotide binding (GO:0000166);Molecular Functions
+Nucleic acid binding (GO:0003676);Molecular Functions
+RNA binding (GO:0003723);Molecular Functions
+Structural constituent of ribosome (GO:0003735);Molecular Functions
+Catalytic activity (GO:0003824);Molecular Functions
+Binding (GO:0005488);Molecular Functions
+ATP binding (GO:0005524);Molecular Functions
+Ligase activity (GO:0016874);Molecular Functions
+rRNA binding (GO:0019843);Molecular Functions
+Ribonucleotide binding (GO:0032553);Molecular Functions
+Purine ribonucleotide binding (GO:0032555);Molecular Functions
+Purine ribonucleoside triphosphate binding (GO:0035639);Molecular Functions
+Small molecule binding (GO:0036094);Molecular Functions
+Ion binding (GO:0043167);Molecular Functions
+Anion binding (GO:0043168);Molecular Functions
+Organic cyclic compound binding (GO:0097159);Molecular Functions
+Carbohydrate derivative binding (GO:0097367);Molecular Functions
+Catalytic activity, acting on a tRNA (GO:0140101);Molecular Functions
+Heterocyclic compound binding (GO:1901363);Molecular Functions
+Intracellular anatomical structure (GO:0005622);Cellular components
+Cytoplasm (GO:0005737);Cellular components
+Ribosome (GO:0005840);Cellular components
+Plasma membrane (GO:0005886);Cellular components
+Membrane (GO:0016020);Cellular components
+Intracellular organelle (GO:0043229);Cellular components
+Intracellular non-membrane-bounded organelle (GO:0043232);Cellular components
+Cell periphery (GO:0071944);Cellular components
+Cellular anatomical entity (GO:0110165);Cellular components
+Ribosome (ser03010);KEGG

@@ -1,0 +1,745 @@
+---
+title: "SEP1_Stationary_interaction"
+author: "Graça Pinto"
+date: "2024-01-10"
+fig: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Phage SEP1 phage interactions with stationary cells - transcriptomic analysis
+
+#library attachment
+```{r}
+library(data.table)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+library(ggpubr)
+library(gridExtra)
+library(tidyverse)
+library(plyr)
+library(pheatmap)
+library(ggtext)
+library(ggbreak)
+library(patchwork)
+library(magick)
+library("factoextra")
+
+
+```
+
+##import metadata with assay information
+```{r}
+metadata_phage <- as.data.frame(read.csv("Data/Metadata_Phage.csv", sep = ";"))
+rownames(metadata_phage) <- metadata_phage$Name
+
+```
+
+##HeatMap analysis for phage
+```{r}
+rpkm_phage <- as.data.frame(read.csv("Data/RPKM_phage_all.csv", sep = ";"))
+rownames(rpkm_phage) <- rpkm_phage$Name
+
+rpkm_phage2 <- rpkm_phage[,-1]
+rpkm_phage2 <- rpkm_phage2[,-1]
+rpkm_phage2 <- as.matrix(rpkm_phage2)
+
+#transpose the matrix
+rpkm_phage3 <- t(rpkm_phage2)
+
+mycols <- list(Condition=c(Exponential= "#81b29a", 
+            Stationary= "#e07a5f"),
+            TimePoint = c("5" = "brown3",
+                          "15" = "#FF8000",
+                          "30" = "#FACC2E"))
+
+my_sample_col <- data.frame(Condition = rep(c("Exponential", "Stationary"), c(9,9)))
+my_sample_col
+row.names (my_sample_col) <- colnames (rpkm_phage3)
+
+TimePoint <- c("5", "5", "5", "15", "15", "15", "30", "30", "30","5", "5", "5", "15", "15", "15", "30", "30", "30" )
+
+my_sample_col$TimePoint <- TimePoint
+
+pheatmap(rpkm_phage3,
+         scale = "row",
+         show_rownames = F,
+         annotation_col = my_sample_col,
+         annotation_colors=mycols,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Clustering by Pearson's Correlation",
+         filename = "fig/heatmap_total_cluster.png",
+         height = 10, width = 16, dpi = 300)
+
+#crate a heatmap without the clustering, that way we have the data shown by category. Seen in the website: https://stackoverflow.com/questions/41648293/r-pheatmap-perform-clustering-and-show-dendrograms-per-annotation-category
+
+pheatmap(rpkm_phage3,
+         scale = "row",
+         show_rownames = F, 
+         cluster_rows = FALSE,
+     cluster_cols = FALSE,
+     show_colnames = F,
+     border_color=NA,
+     gaps_col=c(3,6,9,12,15),
+     annotation_col = my_sample_col,
+     annotation_colors=mycols,
+     filename = "fig/heatmap_total.png", height = 10, width = 16, dpi = 300)
+
+pheatmap(rpkm_phage3[c("gp142", "gp143", "gp144", "gp145", "gp146", "gp147", "gp148", "gp149", "gp150", "gp151", "gp152", "gp153", "gp154"),], scale = "row",
+         annotation_col = my_sample_col,
+         annotation_colors=mycols,
+         clustering_distance_rows = "correlation", #Pearson's
+         clustering_distance_cols = "correlation",
+         main = "Clustering by Pearson's Correlation",
+         filename = "fig/heatmap_genes_cluster.png",
+         height = 10, width = 16, dpi = 300)
+
+pheatmap(rpkm_phage3[c("gp142", "gp143", "gp144", "gp145", "gp146", "gp147", "gp148", "gp149", "gp150", "gp151", "gp152", "gp153", "gp154"),], scale = "row",
+     cluster_rows = FALSE,
+     cluster_cols = FALSE,
+     show_colnames = F,
+     border_color=NA,
+     gaps_col=c(3,6,9,12,15), 
+     annotation_col = my_sample_col,
+     annotation_colors=mycols,
+     filename = "fig/heatmap_genes_1.png", height = 10, width = 16, dpi = 300)
+
+pheatmap(rpkm_phage3[c("gp030", "gp031", "gp032", "gp033", "gp034", "gp035", "gp036", "gp037", "gp038", "gp039", "gp040", "gp041", "gp041", "gp042", "gp043", "gp044"),], scale = "row",
+     cluster_rows = FALSE,
+     cluster_cols = FALSE,
+     border_color=NA,
+     gaps_col=c(3,6,9,12,15), 
+     annotation_col = my_sample_col,
+     annotation_colors=mycols,
+     filename = "fig/heatmap_genes_tails.png", height = 10, width = 16, dpi = 300)
+
+pheatmap(rpkm_phage3[c("gp027", "gp029", "gp032", "gp033", "gp043", "gp045", "gp046", "gp047", "gp050", "gp051", "gp052", "gp053", "gp054", "gp055", "gp058", "gp059", "gp060", "gp061", "gp064", "gp067", "gp068", "gp073", "gp078", "gp104","gp165", "gp166", "gp170", "gp175"),], scale = "row",
+     cluster_rows = FALSE,
+     cluster_cols = FALSE,
+     border_color=NA,
+     gaps_col=c(3,6,9,12,15), 
+     annotation_col = my_sample_col,
+     annotation_colors=mycols,
+     filename = "fig/heatmap_genes_other.png", height = 10, width = 16, dpi = 300)
+
+#Only exponential separated
+rpkm_exp_phage <- as.data.frame(read.csv("Data/RPKM_exp_phage.csv", sep = ";"))
+rownames(rpkm_exp_phage) <- rpkm_exp_phage$Name
+
+rpkm_exp_phage <- rpkm_exp_phage[,-1]
+rpkm_exp_phage <- rpkm_exp_phage[,-1]
+rpkm_exp_phage <- as.matrix(rpkm_exp_phage)
+#transpose the matrix
+rpkm_exp_phage_t <- t(rpkm_exp_phage)
+
+mycols_e <- list(Condition=c(Exponential= "#81b29a"),
+            TimePoint = c("5" = "brown3",
+                          "15" = "#FF8000",
+                          "30" = "#FACC2E"))
+
+my_sample_col_e <- data.frame(Condition = rep(c("Exponential"), c(9)))
+my_sample_col_e
+row.names (my_sample_col_e) <- colnames (rpkm_exp_phage_t)
+
+TimePoint_1 <- c("5", "5", "5", "15", "15", "15", "30", "30", "30")
+
+my_sample_col_e$TimePoint <- TimePoint_1
+
+heat_E <- pheatmap(rpkm_exp_phage_t,
+         scale = "row",
+         show_rownames = F, 
+         cluster_rows = FALSE,
+     cluster_cols = FALSE,
+     show_colnames = F,
+     border_color=NA,
+     gaps_col=c(3,6),
+     annotation_col = my_sample_col_e,
+     annotation_colors=mycols_e,
+     filename = "fig/heatmap_phage_exp_total.png", height = 10, width = 16, dpi = 300)
+
+#Only stationary separated
+rpkm_sta_phage <- as.data.frame(read.csv("Data/RPKM_sta_phage.csv", sep = ";"))
+rownames(rpkm_sta_phage) <- rpkm_sta_phage$Name
+
+rpkm_sta_phage <- rpkm_sta_phage[,-1]
+rpkm_sta_phage <- rpkm_sta_phage[,-1]
+rpkm_sta_phage <- as.matrix(rpkm_sta_phage)
+#transpose the matrix
+rpkm_sta_phage_t <- t(rpkm_sta_phage)
+
+mycols_s <- list(Condition=c(Stationary= "#e07a5f"),
+            TimePoint = c("5" = "brown3",
+                          "15" = "#FF8000",
+                          "30" = "#FACC2E"))
+
+my_sample_col_s <- data.frame(Condition = rep(c("Stationary"), c(9)))
+my_sample_col_s
+row.names (my_sample_col_s) <- colnames (rpkm_sta_phage_t)
+
+
+my_sample_col_s$TimePoint <- TimePoint_1
+
+heat_S <- pheatmap(rpkm_sta_phage_t,
+         scale = "row",
+         show_rownames = F, 
+         cluster_rows = FALSE,
+     cluster_cols = FALSE,
+     show_colnames = F,
+     border_color=NA,
+     gaps_col=c(3,6),
+     annotation_col = my_sample_col_s,
+     annotation_colors=mycols_s,
+     filename = "fig/heatmap_phage_sta_total.png", height = 10, width = 16, dpi = 300)
+
+#Combine heatmaps from phage with exponential and stationary cells
+plot_list=list()
+plot_list[['p1']]=heat_E[[4]]
+plot_list[['p2']]=heat_S[[4]]
+
+heat_total <- grid.arrange(grobs=plot_list, ncol=2)
+ggsave("fig/heat_total_phage.png", heat_total, width = 20, height = 10)
+```
+
+## Analysis of RPKM for the phages' genes at each time point at exponential state
+
+```{r}
+#TimePoint 5 min
+RPKM_E_5 <- as.data.frame(read.csv("Data/RPKM_E_5.csv", sep = ";"))
+rownames(RPKM_E_5) <- RPKM_E_5$Feature_ID
+
+#seen in https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
+
+rpkm_e_5.plot <- ggplot (RPKM_E_5, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#648FFF") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank()) +
+  ylab("RPKM") +
+  xlab("") 
+rpkm_e_5.plot
+
+#TimePoint 15min
+RPKM_E_15 <- as.data.frame(read.csv("Data/RPKM_E_15.csv", sep = ";"))
+rownames(RPKM_E_15) <- RPKM_E_15$Feature_ID
+
+rpkm_e_15.plot <- ggplot (RPKM_E_15, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#DC267F") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank()) +
+  ylab("RPKM") +
+  xlab("")
+rpkm_e_15.plot
+
+#TimePoint 30min
+RPKM_E_30 <- as.data.frame(read.csv("Data/RPKM_E_30.csv", sep = ";"))
+rownames(RPKM_E_30) <- RPKM_E_30$Feature_ID
+
+rpkm_e_30.plot <- ggplot (RPKM_E_30, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#FFB000") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank()) +
+  ylab("RPKM") +
+  xlab("")
+rpkm_e_30.plot
+
+#combine all plots
+Combineplot <- ggarrange(rpkm_e_5.plot, rpkm_e_15.plot, rpkm_e_30.plot,
+                         ncol = 1, nrow = 3,
+                         labels = c("05 min", "15 min", "30 min"),
+                         hjust = -8)
+Combineplot
+ggsave("fig/PhageGenes_reads_time.png", h=4, w=8, dpi = 300)
+
+```
+
+## RPKM for phage at each time for each gene at stationary state
+```{r}
+#TimePoint 5 min
+RPKM_S_5 <- as.data.frame(read.csv("Data/RPKM_S_5.csv", sep = ";"))
+rownames(RPKM_S_5) <- RPKM_S_5$Feature_ID
+
+#seen in https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
+
+rpkm_s_5.plot <- ggplot (RPKM_S_5, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#648FFF") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank()) +
+  ylab("RPKM") +
+  xlab("") +
+  scale_y_continuous(labels=scales::comma)
+rpkm_s_5.plot
+
+#adding break in the y-axis to better understand the RPKM from all genes
+rpkm_s_5_break_plot <- ggplot (RPKM_S_5, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#648FFF") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.y.right=element_blank(),
+        axis.ticks.y.right=element_blank(),
+        axis.line.y.right=element_blank()) +
+  ylab("RPKM") +
+  xlab("") +
+  scale_y_continuous(labels=scales::comma) +
+  scale_y_break(c(50000, 200000), scales = "free")
+rpkm_s_5_break_plot
+ggsave("fig/PhageGenes_reads_5time_stationary_break.png", h=4, w=8, dpi = 300)
+
+
+#TimePoint 15min
+RPKM_S_15 <- as.data.frame(read.csv("Data/RPKM_S_15.csv", sep = ";"))
+rownames(RPKM_S_15) <- RPKM_S_15$Feature_ID
+
+rpkm_s_15.plot <- ggplot (RPKM_S_15, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#DC267F") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank()) +
+  ylab("RPKM") +
+  xlab("") +
+  scale_y_continuous(labels=scales::comma)
+rpkm_s_15.plot
+
+#adding break in the y-axis to better understand the RPKM from all genes
+rpkm_s_15_break_plot <- ggplot (RPKM_S_15, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#DC267F") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.y.right=element_blank(),
+        axis.ticks.y.right=element_blank(),
+        axis.line.y.right=element_blank()) +
+  ylab("RPKM") +
+  xlab("") +
+  scale_y_continuous(labels=scales::comma) +
+  scale_y_break(c(50000, 200000), scales = "free")
+rpkm_s_15_break_plot
+ggsave("fig/PhageGenes_reads_15time_stationary_break.png", h=4, w=8, dpi = 300)
+
+
+#TimePoint 30min
+RPKM_S_30 <- as.data.frame(read.csv("Data/RPKM_S_30.csv", sep = ";"))
+rownames(RPKM_S_30) <- RPKM_S_30$Feature_ID
+
+rpkm_s_30.plot <- ggplot (RPKM_S_30, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#FFB000") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank()) +
+  ylab("RPKM") +
+  xlab("")+
+  scale_y_continuous(labels=scales::comma)
+rpkm_s_30.plot
+
+#adding break in the y-axis to better understand the RPKM from all genes
+rpkm_s_30_break_plot <- ggplot (RPKM_S_30, aes(x=Feature_ID, y=Average, group=1)) +
+  geom_line(color="#FFB000") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.y.right=element_blank(),
+        axis.ticks.y.right=element_blank(),
+        axis.line.y.right=element_blank()) +
+  ylab("RPKM") +
+  xlab("") +
+  scale_y_continuous(labels=scales::comma) +
+  scale_y_break(c(50000, 200000), scales = "free")
+rpkm_s_30_break_plot
+ggsave("fig/PhageGenes_reads_30time_stationary_break.png", h=4, w=8, dpi = 300)
+
+
+#combine all plots
+Combineplot_S <- ggarrange(rpkm_s_5.plot, rpkm_s_15.plot, rpkm_s_30.plot,
+                         ncol = 1, nrow = 3,
+                         labels = c("05 min", "15 min", "30 min"),
+                         hjust = -8)
+Combineplot_S
+ggsave("fig/PhageGenes_reads_time_stationary.png", h=4, w=8, dpi = 300) #losses the break in the y-axis
+
+Combineplot_S_break2 <- ggarrange(rpkm_s_5_break_plot, rpkm_s_15_break_plot, rpkm_s_30_break_plot,
+                         ncol = 1, nrow = 3,
+                         labels = c("05 min", "15 min", "30 min"),
+                         hjust = -8)
+Combineplot_S_break2
+Combineplot_S_break <- cowplot::plot_grid(rpkm_s_5_break_plot, rpkm_s_15_break_plot, rpkm_s_30_break_plot, nrow = 3)
+Combineplot_S_break 
+ggsave("fig/PhageGenes_reads_time_stationary_break.png", h=4, w=8, dpi = 300) #losses the break in the y-axis
+
+Combineplot_S_break3 <- rpkm_s_5_break_plot / rpkm_s_15_break_plot 
+Combineplot_S_break4 <- Combineplot_S_break3 / rpkm_s_30_break_plot
+
+wrap_plots(Combineplot_S_break3 / rpkm_s_30_break_plot) #losses the break in the y-axis
+
+
+P11 <- aplot::plot_list(rpkm_s_5_break_plot,rpkm_s_15_break_plot,rpkm_s_30_break_plot,
+                 nrow=3, ncol = 1)
+ggsave("fig/PhageGenes_reads_time_stationary_break_1.png", h=4, w=8, dpi = 300)
+
+
+```
+
+#combine heatmaps with rpkm plots.
+
+```{r}
+
+#combining plots RPKM and heatmaps in one image.
+P12 <- aplot::plot_list(rpkm_e_5.plot, rpkm_e_15.plot, rpkm_e_30.plot,
+                 nrow=3, ncol = 1)
+
+P5 <- aplot::plot_list(P12, P11, heat_E, heat_S,
+                       nrow = 2, ncol = 2,
+                       tag_levels = "A")
+P5
+ggsave("fig/Figure4.png", h=15, w=20, dpi = 300)
+ggsave("fig/Figure4.eps", h=15, w=20, dpi = 300)
+
+
+#save SEP1 genome to eps (vectorial format)
+setEPS()
+postscript("fig/sep1.eps")
+plt1 <- image_read("Data/SEP1.jpg") %>%
+  image_ggplot()
+print(plt1)
+dev.off()
+
+#incorporating the genome SEP1 into the final image.
+P111 <- aplot::plot_list(rpkm_s_5_break_plot,rpkm_s_15_break_plot,rpkm_s_30_break_plot, plt1,
+                 nrow=4, ncol = 1)
+P121 <- aplot::plot_list(rpkm_e_5.plot, rpkm_e_15.plot, rpkm_e_30.plot, plt1,
+                 nrow=4, ncol = 1)
+P111
+P121
+
+Pe <- aplot::plot_list(P12, plt1,
+                 nrow=2, ncol = 1)
+Pf <- aplot::plot_list(P11, plt1,
+                 nrow=2, ncol = 1)
+
+P15 <- aplot::plot_list(Pe, Pf, heat_E, heat_S, 
+                       nrow = 2, ncol = 2,
+                       tag_levels = "A")
+P15
+ggsave("fig/Figure4_1.png", h=20, w=20, dpi = 300) #the genome is not in the desired place. The genome will be added posteriorly.
+ggsave("fig/Figure4_1.eps", h=20, w=20, dpi = 300) 
+
+
+```
+
+
+## Principal Component Analysis (PCA) 
+
+#import metadata with assay information
+```{r}
+metadata_phage <- as.data.frame(read.csv("Data/Metadata_Phage.csv", sep = ";"))
+rownames(metadata_phage) <- metadata_phage$Name
+
+```
+
+##PCA analysis for phage
+```{r}
+rpkm_phage <- as.data.frame(read.csv("Data/RPKM_phage_all.csv", sep = ";"))
+rownames(rpkm_phage) <- rpkm_phage$Name
+rpkm_phage <- rpkm_phage[,-1]
+
+pca_result <- prcomp (rpkm_phage[,-1], scale = TRUE)
+names(pca_result)
+summary (pca_result)
+pca_result$center
+pca_result$scale
+pca_result$rotation
+pca_result$x
+
+##Recall that by default, eigenvectors in R point in the negative direction
+pca_result$rotation <- -pca_result$rotation
+pca_result$rotation
+pca_result$x <- - pca_result$x
+pca_result$x
+
+#Plots
+biplot(pca_result, scale = 0, cex=0.6)
+
+fviz_eig(pca_result, addlabels = TRUE, ylim = c(0, 70))
+
+fviz_pca_biplot(pca_result)
+
+fviz_pca_biplot(pca_result,
+                col.var = "cos2",
+                gradient.cols = c("#FFCC00", "#CC9933", "#660033", "#330033"),
+                repel = TRUE,
+                ggtheme = theme_minimal())
+
+pca_plot <- fviz_pca_ind (pca_result,
+                col.ind =  "cos2",
+                gradient.cols = c("#FFCC00", "#CC9933", "#660033", "#330033"),
+                repel = TRUE)
+pca_plot
+
+#for interpretation https://biosakshat.github.io/pca.html#quality-of-representation
+# and look into this https://bioinfo4all.wordpress.com/2021/01/31/tutorial-6-how-to-do-principal-component-analysis-pca-in-r/  
+# https://statisticsglobe.com/biplot-pca-r 
+# https://bioinfo4all.wordpress.com/2021/01/31/tutorial-6-how-to-do-principal-component-analysis-pca-in-r/
+# This was the choosen final PCA used for analysis
+
+pca_plot_v1 <- ggpar(pca_plot,
+      title = "Principal Component Analysis",
+      xlab = "PC1", ylab = "PC2",
+      legend.title = "Cos2", legend.position = "top",
+      ggtheme = theme_minimal())
+pca_plot_v1
+
+mycols <- c("Exponential" = "#81b29a",
+            "Stationary" = "#e07a5f" )
+
+pca_plot_v2 <- fviz_pca_ind(pca_result, col.ind = rpkm_phage$Condition,
+                  palette = mycols, addEllipses = FALSE, repel = TRUE) +
+  ylim(-15, 10) +
+  xlim(-15, 15)
+pca_plot_v3 <- ggpar(pca_plot_v2,
+      title = "PCA",
+      xlab = "PC1", ylab = "PC2",
+      legend.title = "Cell growth phase", legend.position = "top",
+      ggtheme = theme_bw())
+pca_plot_v3
+ggsave("fig/PCA_Phage_dot.png", h=4, w=8, dpi = 300)
+
+```
+
+
+##Reads for bacteria and phage
+```{r}
+metadata <- as.data.frame(read.csv("Data/Metadata.csv", sep = ";"))
+rownames(metadata) <- metadata$Name
+
+reads_mapped <- as.data.frame(read.csv("Data/Reads_mapped.csv", sep = ";"))
+rownames(reads_mapped) <- reads_mapped$Name
+
+reads_mapped.mlt <- reshape2::melt(reads_mapped) %>% 
+  mutate(Reads = as.character(variable)) %>% 
+  select(-variable) %>%
+  left_join(metadata)
+
+mycols <- c("Phage" = "#FFC20A",
+            "Bacteria" = "#1CAB36" )
+
+reads.plot <- ggplot(reads_mapped.mlt, aes(x=TimePoint, y=value, fill=Study)) +
+  stat_summary(geom = "ribbon", alpha=0.6) +
+  stat_summary(geom = "point", size= 1.8, shape= 1) +
+  scale_fill_manual(values=mycols) +
+  scale_x_continuous(breaks = c(0, 5, 15, 30)) +
+  theme_classic() +
+  ylab("% Reads mapped") +
+  xlab("Time (min)") +
+  facet_grid(~Condition, scales = "free")
+reads.plot
+ggsave("fig/Reads.png", h=4, w=8, dpi = 300)
+
+reads.dot.plot <- ggplot(reads_mapped.mlt, aes(x=TimePoint, y=value, fill=Study)) +
+  geom_point(aes(color=Study)) +
+  scale_fill_manual(values=mycols) +
+  scale_x_continuous(breaks = c(0, 5, 15, 30)) +
+  theme_classic() +
+  ylab("% Reads mapped") +
+  xlab("Time (min)") +
+  facet_grid(~Condition, scales = "free")
+reads.dot.plot
+ggsave("fig/Reads_dot.png", h=4, w=8, dpi = 300)
+
+```
+
+#Plots for enrichment
+```{r}
+
+metadata_pathway <- as.data.frame(read.csv("Data/Metadata_pathway.csv", sep = ";"))
+rownames(metadata_pathway) <- metadata_pathway$pathway
+
+metadata_kegg <- as.data.frame(read.csv("Data/Metadata_kegg.csv", sep = ";"))
+rownames(metadata_kegg) <- metadata_kegg$pathway
+
+upregulated_mapped <- as.data.frame(read.csv("Data/upregulated_E.csv", sep = ";", check.names = F))
+rownames(upregulated_mapped) <- upregulated_mapped$pathway
+upregulated_mapped[is.na(upregulated_mapped)] <- 0
+
+upregulated_mapped.mlt <- reshape2::melt(upregulated_mapped) %>% 
+  mutate(Time = as.character(variable)) %>% 
+  select(-variable)
+
+upregulated_mapped.mlt$pathway <- factor(upregulated_mapped.mlt$pathway, levels = unique(upregulated_mapped.mlt$pathway))
+
+upregulated_plot <- ggplot(upregulated_mapped.mlt,aes(x=pathway,y=value,fill=Time)) + 
+  geom_bar(stat="identity",position="dodge") +
+  coord_flip() +
+  theme_classic()  +
+  xlab("") +
+  ylab("% of genes") +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_fill_manual(values = c('5' = "#648FFF",
+                               '15' = "#DC267F",
+                               '30' = "#FFB000"),
+                    limits = c('5',
+                               '15',
+                               '30'))
+  
+upregulated_plot
+ggsave("fig/E_Genes_percentage_up.png", h=4, w=12, dpi = 300)
+
+downregulated_mapped <- as.data.frame(read.csv("Data/downregulated_E.csv", sep = ";", check.names = F))
+rownames(downregulated_mapped) <- downregulated_mapped$pathway
+downregulated_mapped[is.na(downregulated_mapped)] <- 0
+
+downregulated_mapped.mlt <- reshape2::melt(downregulated_mapped) %>% 
+  mutate(Time = as.character(variable)) %>% 
+  select(-variable)
+
+downregulated_mapped.mlt$pathway <- factor(downregulated_mapped.mlt$pathway, levels = unique(downregulated_mapped.mlt$pathway))
+
+downregulated_plot <- ggplot(downregulated_mapped.mlt,aes(x=pathway,y=value,fill=Time)) + 
+  geom_bar(stat="identity",position="dodge") +
+  coord_flip() +
+  theme_classic()  +
+  xlab("") +
+  ylab("% of genes") +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_fill_discrete(breaks=c('30'), type = c("#FFB000"))
+  
+downregulated_plot
+ggsave("fig/E_Genes_percentage_down.png", h=4, w=8, dpi = 300)
+
+
+upregulated_S_mapped <- as.data.frame(read.csv("Data/upregulated_S.csv", sep = ";", check.names = F))
+rownames(upregulated_S_mapped) <- upregulated_S_mapped$pathway
+upregulated_S_mapped[is.na(upregulated_S_mapped)] <- 0
+
+upregulated_S_mapped.mlt <- reshape2::melt(upregulated_S_mapped) %>% 
+  mutate(Time = as.character(variable)) %>% 
+  select(-variable)
+
+upregulated_S_mapped.mlt$pathway <- factor(upregulated_S_mapped.mlt$pathway, levels = unique(upregulated_S_mapped.mlt$pathway))
+
+upregulated_S_plot <- ggplot(upregulated_S_mapped.mlt,aes(x=pathway,y=value,fill=Time)) + 
+  geom_bar(stat="identity",position="dodge") +
+  coord_flip() +
+  theme_classic()  +
+  xlab("") +
+  ylab("% of genes") +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_fill_discrete(breaks=c('15 min', '30 min'), type = c("#DC267F", "#FFB000"))
+  
+upregulated_S_plot
+ggsave("fig/S_Genes_percentage_up.png", h=4, w=12, dpi = 300)
+
+downregulated_S_mapped <- as.data.frame(read.csv("Data/downregulated_S.csv", sep = ";", check.names = F))
+rownames(downregulated_S_mapped) <- downregulated_S_mapped$pathway
+downregulated_S_mapped[is.na(downregulated_S_mapped)] <- 0
+
+downregulated_S_mapped.mlt <- reshape2::melt(downregulated_S_mapped) %>% 
+  mutate(Time = as.character(variable)) %>% 
+  select(-variable)
+
+downregulated_S_mapped.mlt$pathway <- factor(downregulated_S_mapped.mlt$pathway, levels = unique(downregulated_S_mapped.mlt$pathway))
+
+downregulated_S_plot <- ggplot(downregulated_S_mapped.mlt,aes(x=pathway,y=value,fill=Time)) + 
+  geom_bar(stat="identity",position="dodge") +
+  coord_flip() +
+  theme_classic()  +
+  xlab("") +
+  ylab("% of genes") +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_fill_discrete(breaks=c('30 min'), type = c("#FFB000"))
+  
+downregulated_S_plot
+ggsave("fig/S_Genes_percentage_down.png", h=4, w=12, dpi = 300)
+
+
+upregulated_S_path_mapped <- as.data.frame(read.csv("Data/upregulated_S_path.csv", sep = ";", check.names = F))
+rownames(upregulated_S_path_mapped) <- upregulated_S_path_mapped$pathway
+upregulated_S_path_mapped[is.na(upregulated_S_path_mapped)] <- 0
+
+upregulated_S_path_mapped.mlt <- reshape2::melt(upregulated_S_path_mapped) %>% 
+  mutate(Time = as.character(variable)) %>% 
+  select(-variable)%>%
+  left_join(metadata_pathway)
+
+upregulated_S_path_mapped.mlt$pathway <- factor(upregulated_S_path_mapped.mlt$pathway, levels = unique(upregulated_S_path_mapped.mlt$pathway))
+
+upregulated_S_path_mapped_plot <- ggplot(upregulated_S_path_mapped.mlt,aes(x=pathway,y=value,fill=Time)) + 
+  geom_bar(stat="identity",position="dodge") +
+  coord_flip() +
+  theme_classic()  +
+  theme(legend.position = "right") +
+  xlab("") +
+  ylab("% of genes") +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_fill_discrete(breaks=c('15 min', '30 min'), type = c("#DC267F", "#FFB000")) +
+  facet_wrap(~type, scales = "free")
+  
+upregulated_S_path_mapped_plot
+ggsave("fig/S_Genes_path_percentage_up.png", h=8, w=16, dpi = 300)
+
+
+downregulated_S_kegg_mapped <- as.data.frame(read.csv("Data/downregulated_S_kegg.csv", sep = ";", check.names = F))
+rownames(downregulated_S_kegg_mapped) <- downregulated_S_kegg_mapped$pathway
+downregulated_S_kegg_mapped[is.na(downregulated_S_kegg_mapped)] <- 0
+
+downregulated_S_kegg_mapped.mlt <- reshape2::melt(downregulated_S_kegg_mapped) %>% 
+  mutate(Time = as.character(variable)) %>% 
+  select(-variable)
+
+downregulated_S_kegg_mapped.mlt$pathway <- factor(downregulated_S_kegg_mapped.mlt$pathway, levels = unique(downregulated_S_kegg_mapped.mlt$pathway))
+
+downregulated_S_kegg_plot <- ggplot(downregulated_S_kegg_mapped.mlt,aes(x=pathway,y=value,fill=Time)) + 
+  geom_bar(stat="identity",position="dodge") +
+  coord_flip() +
+  theme_classic()  +
+  xlab("") +
+  ylab("% of genes") +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_fill_discrete(breaks=c('30 min'), type = c("#FFB000"))
+  
+downregulated_S_kegg_plot
+ggsave("fig/S_Genes_percentage_kegg_down.png", h=4, w=12, dpi = 300)
+
+
+regulated_S_kegg_mapped <- as.data.frame(read.csv("Data/kegg.csv", sep = ";", check.names = F))
+rownames(regulated_S_kegg_mapped) <- regulated_S_kegg_mapped$pathway
+regulated_S_kegg_mapped[is.na(regulated_S_kegg_mapped)] <- 0
+
+regulated_S_kegg_mapped.mlt <- reshape2::melt(regulated_S_kegg_mapped) %>% 
+  mutate(Time= as.character(variable)) %>% 
+  select(-variable)%>%
+  left_join(metadata_kegg)
+
+regulated_S_kegg_mapped.mlt$pathway <- factor(regulated_S_kegg_mapped.mlt$pathway, levels = unique(regulated_S_kegg_mapped.mlt$pathway))
+
+regulated_S_kegg_plot <- ggplot(regulated_S_kegg_mapped.mlt,aes(x=pathway,y=value,fill=regulated)) + 
+  geom_bar(stat="identity",position="dodge") +
+  coord_flip() +
+  theme_classic()  +
+  xlab("") +
+  ylab("% of genes") +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_fill_discrete(breaks=c('up', 'down'), type = c("#891912", "#0b7227"))
+  
+regulated_S_kegg_plot
+ggsave("fig/S_Genes_percentage_kegg.png", h=4, w=12, dpi = 300)
+
+all_plot <- ggarrange(upregulated_plot, downregulated_plot, upregulated_S_plot, downregulated_S_plot,
+                      nrow = 2, ncol = 2,
+                      align = "h")
+all_plot
+ggsave("fig/all_up_down.png", h=20, w=20, dpi = 300)
+
+wrap_plots(upregulated_plot, downregulated_plot, upregulated_S_plot, downregulated_S_plot) + plot_annotation(tag_levels = 'A')
+ggsave("fig/all_up_down2.png", h=10, w=20, dpi = 300)
+
+P1 <- aplot::plot_list (upregulated_plot, downregulated_plot, upregulated_S_plot, downregulated_S_plot,
+                        nrow = 2, ncol = 2)
+P1
+ggsave("fig/all_up_down3.png", h=10, w=20, dpi = 300)
+```
